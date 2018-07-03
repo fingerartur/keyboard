@@ -7,10 +7,21 @@ export class Keyboard {
   constructor(
     private domNode: Element
   ) {
+    if (!domNode) {
+      throw new Error('bad usage: domNode cannot be null');
+    } else if (!(domNode instanceof Element)) {
+      throw new Error('bad usage: domNode must be an Element');
+    }
     this.startListening();
   }
 
   on(keys: Array<Key> | Array<Array<Key>>, callback: Function, preventDefault: boolean = true): void {
+    if (!callback) {
+      throw new Error('bad usage: callback cannot be null');
+    } else if (typeof callback !== 'function') {
+      throw new Error('bad usage: callback must be a function');
+    }
+
     if (keys.length === 0) {
       throw new Error('bad usage: keys cannot be empty');
     }

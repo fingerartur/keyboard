@@ -10,6 +10,7 @@ import { Key } from 'keyboard-ts';
 
 const target = document.getElementById('target') as HTMLElement;
 const keyboard = new Keyboard(target);
+// listens to keyboard shortcuts when "target" element is focused
 
 keyboard.on([ Key.Ctrl, Key.Z ], () => { console.log('undo at Ctrl+Z'); });
 keyboard.on([ Key.Ctrl, Key.Shift, Key.Z ], () => { console.log('redo at Ctrl+Shift+Z'); });
