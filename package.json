@@ -1,0 +1,39 @@
+{
+  "name": "keyboard-ts",
+  "version": "1.0.0",
+  "description": "Keyboard shortcut listener library in JS and TS",
+  "keywords": [
+    "keyboard",
+    "shortcut",
+    "combo",
+    "listener",
+    "typescript"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@types/chai": "^4.1.3",
+    "@types/mocha": "^5.2.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "ts-node": "^6.1.0",
+    "typescript": "^2.9.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register src/**/*.test.ts"
+  },
+  "dependencies": {
+    "ts-keycode-enum": "^1.0.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fingerartur/keyboard.git"
+  },
+  "author": "Artur Finger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fingerartur/keyboard/issues"
+  },
+  "homepage": "https://github.com/fingerartur/keyboard#readme"
+}
