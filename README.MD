@@ -40,7 +40,7 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
 
 # Install
 
-```npm i keyboard```
+```npm i keyboard-ts```
 
 # Credit
 
