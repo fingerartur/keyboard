@@ -1,96 +1,92 @@
-import { Key } from 'ts-keycode-enum';
+import { Key } from 'ts-keycode-enum'
+
+type KeyCombo = Array<Key>
 
 export class Keyboard {
   private mapCombosToHandlers = new Map<number[], Function[]>();
   private pressedKeys = new Set<Key>();
 
   constructor(
-    private domNode: Element
+      private domNode: Element | Document
   ) {
-    if (!domNode) {
-      throw new Error('bad usage: domNode cannot be null');
-    } else if (!(domNode instanceof Element)) {
-      throw new Error('bad usage: domNode must be an Element');
-    }
-    this.startListening();
+      this.startListening()
   }
 
-  on(keys: Array<Key> | Array<Array<Key>>, callback: Function, preventDefault: boolean = true): void {
-    if (!callback) {
-      throw new Error('bad usage: callback cannot be null');
-    } else if (typeof callback !== 'function') {
-      throw new Error('bad usage: callback must be a function');
-    }
+  on(keys: Key[] | KeyCombo[], callback: Function) {
+      const combos = this.toCombos(keys)
 
-    if (keys.length === 0) {
-      throw new Error('bad usage: keys cannot be empty');
-    }
-
-    if (keys.length > 0) {
-      if (typeof keys[0] === 'number') {
-        keys = [keys as Array<Key>];
-      } else {
-        keys = keys as Array<Array<Key>>;
-        keys.forEach(combo => {
-          if (combo.length === 0) {
-            throw new Error('bad usage: combo cannot be empty');
-          }
-        });
-      }
-    }
-
-    keys = keys as Array<Array<Key>>;
-    keys.forEach((keyCombo: Array<Key>) => {
-      this.onCombo(keyCombo, callback, preventDefault);
-    });
+      combos.forEach(combo => {
+          this.registerComboCallback(combo, callback)
+      })
   }
 
-  startListening(): void {
-    this.domNode.addEventListener('keydown', this.handleKeyDown);
-    this.domNode.addEventListener('keyup', this.handleKeyUp);
+  startListening() {
+      this.domNode.addEventListener('keydown', this.handleKeyDown)
+      this.domNode.addEventListener('keyup', this.handleKeyUp)
   }
 
-  stopListening(): void {
-    this.domNode.removeEventListener('keydown', this.handleKeyDown);
-    this.domNode.removeEventListener('keyup', this.handleKeyUp);
+  stopListening() {
+      this.domNode.removeEventListener('keydown', this.handleKeyDown)
+      this.domNode.removeEventListener('keyup', this.handleKeyUp)
+  }
+
+  clear() {
+      this.stopListening()
+      this.mapCombosToHandlers.clear()
+      this.pressedKeys.clear()
   }
 
   private handleKeyDown = (event: any) => {
-    this.pressedKeys.add(event.keyCode);
+      this.pressedKeys.add(event.keyCode)
 
-    this.mapCombosToHandlers.forEach((handlers, combo) => {
-      if (this.isComboPressed(combo)) {
-        handlers.forEach(handler => handler());
-      }
-    });
+      this.mapCombosToHandlers.forEach((handlers, combo) => {
+          if (this.isComboPressed(combo)) {
+              handlers.forEach(handler => handler())
+          }
+      })
   }
 
   private handleKeyUp = (event: any) => {
-    this.pressedKeys.delete(event.keyCode);
+      this.pressedKeys.delete(event.keyCode)
   }
 
-  private isComboPressed(combo: number[]): boolean {
-    let result = true;
-    combo.forEach(key => {
-      if (!this.pressedKeys.has(key)) {
-        result = false;
+  private isComboPressed(combo: number[]) {
+      let result = true
+
+      combo.forEach(key => {
+          if (!this.pressedKeys.has(key)) {
+              result = false
+          }
+      })
+
+      return result
+  }
+
+  private registerComboCallback(combo: Array<Key>, callback: Function) {
+      if (!this.mapCombosToHandlers.has(combo)) {
+          this.mapCombosToHandlers.set(combo, [])
       }
-    });
-    return result;
+
+      const handlers = this.mapCombosToHandlers.get(combo)
+
+      handlers!.push(callback)
   }
 
-  private onCombo(combo: Array<Key>, callback: Function, preventDefault: boolean): void {
-    if (!this.mapCombosToHandlers.has(combo)) {
-      this.mapCombosToHandlers.set(combo, []);
-    }
-    const handlers = this.mapCombosToHandlers.get(combo);
-    if (!handlers) {
-      throw new Error('fatal bug');
-    }
-    handlers.push(callback);
-  }
+  private toCombos(keys: KeyCombo[] | Key[]) {
+      if (keys.length === 0) {
+          return []
+      }
 
-  private getShortcutName(keys: Key[]): string {
-    return 'S-' + keys.join('-');
+      const isKeys = !Array.isArray(keys[0])
+      let combos: KeyCombo[] = []
+
+      if (isKeys) {
+          combos = (keys as Key[]).map(key => [key])
+      } else {
+          combos = keys as KeyCombo[]
+          combos = combos.filter(combo => combo.length > 0)
+      }
+
+      return combos
   }
 }

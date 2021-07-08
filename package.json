@@ -1,7 +1,7 @@
 {
   "name": "keyboard-ts",
-  "version": "1.0.1",
-  "description": "Keyboard shortcut listener library in JS and TS",
+  "version": "1.1.0",
+  "description": "Keyboard shortcut listener library in TS",
   "keywords": [
     "keyboard",
     "shortcut",
@@ -11,20 +11,21 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "dependencies": {
+    "ts-keycode-enum": "^1.0.6"
+  },
   "devDependencies": {
-    "@types/chai": "^4.1.3",
-    "@types/mocha": "^5.2.1",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "ts-node": "^6.1.0",
+    "@types/jest": "^26.0.24",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
+    "eslint": "^7.30.0",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.3",
     "typescript": "^2.9.1"
   },
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register src/**/*.test.ts"
-  },
-  "dependencies": {
-    "ts-keycode-enum": "^1.0.6"
+    "test": "jest --config=./jest.config.js"
   },
   "repository": {
     "type": "git",
