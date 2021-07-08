@@ -1,0 +1,10 @@
+node_modules
+src
+
+.eslintrc
+.gitignore
+.npmignore
+jest.config.js
+package-lock.json
+tsconfig.json
+webpack.config.json
