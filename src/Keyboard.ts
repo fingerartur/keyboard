@@ -2,8 +2,14 @@ import { Key } from 'ts-keycode-enum'
 
 type KeyCombo = Array<Key>
 
+/**
+ * @param {KeyboardEvent} event - pressed key event, in case of multi-key combos
+ *  the last pressed key event is passed to this handler
+ */
+type Handler = (event: KeyboardEvent) => void
+
 export class Keyboard {
-  private mapCombosToHandlers = new Map<number[], Function[]>();
+  private mapCombosToHandlers = new Map<number[], Handler[]>();
   private pressedKeys = new Set<Key>();
 
   constructor(
@@ -12,7 +18,7 @@ export class Keyboard {
       this.startListening()
   }
 
-  on(keys: Key[] | KeyCombo[], callback: Function) {
+  on(keys: Key[] | KeyCombo[], callback: Handler) {
       const combos = this.toCombos(keys)
 
       combos.forEach(combo => {
@@ -36,17 +42,17 @@ export class Keyboard {
       this.pressedKeys.clear()
   }
 
-  private handleKeyDown = (event: any) => {
+  private handleKeyDown = (event: KeyboardEvent) => {
       this.pressedKeys.add(event.keyCode)
 
       this.mapCombosToHandlers.forEach((handlers, combo) => {
           if (this.isComboPressed(combo)) {
-              handlers.forEach(handler => handler())
+              handlers.forEach(handler => handler(event))
           }
       })
   }
 
-  private handleKeyUp = (event: any) => {
+  private handleKeyUp = (event: KeyboardEvent) => {
       this.pressedKeys.delete(event.keyCode)
   }
 
@@ -62,7 +68,7 @@ export class Keyboard {
       return result
   }
 
-  private registerComboCallback(combo: Array<Key>, callback: Function) {
+  private registerComboCallback(combo: Array<Key>, callback: Handler) {
       if (!this.mapCombosToHandlers.has(combo)) {
           this.mapCombosToHandlers.set(combo, [])
       }

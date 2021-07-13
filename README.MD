@@ -13,6 +13,7 @@ const keyboard = new Keyboard(target)
 
 // listen to keys
 keyboard.on([ Key.Escape, Key.Delete ], () => {  /* on Del or Esc */ })
+keyboard.on([ Key.Space ], event => event.preventDefault())
 
 // listen to key combos
 keyboard.on([[ Key.Ctrl, Key.Z ]], () => {  /* on Ctrl+Z */ })

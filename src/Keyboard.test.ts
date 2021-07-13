@@ -2,10 +2,18 @@ import { Key } from 'ts-keycode-enum'
 import { Keyboard } from './Keyboard'
 
 const triggerKeyPress = (key: Key) => {
+    const keydownEvent = new KeyboardEvent('keydown', { keyCode: key })
+    const keyupEvent = new KeyboardEvent('keyup', { keyCode: key })
+
     // @ts-ignore
-    document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: key }))
+    document.dispatchEvent(keydownEvent)
     // @ts-ignore
-    document.dispatchEvent(new KeyboardEvent('keyup', { keyCode: key }))
+    document.dispatchEvent(keyupEvent)
+
+    return {
+        keydownEvent,
+        keyupEvent,
+    }
 }
 
 describe('keyboard', () => {
@@ -46,6 +54,24 @@ describe('keyboard', () => {
             triggerKeyPress(Key.B)
 
             expect(callback).toBeCalledTimes(2)
+            keyboard.clear()
+        })
+    })
+
+    describe('handler gets keydown event', () => {
+        it('gets keydown event', () => {
+            const keyboard = new Keyboard(document)
+            const callback = jest.fn()
+
+            keyboard.on([ Key.A ], callback)
+
+            expect(callback).not.toBeCalled()
+
+            const { keydownEvent } = triggerKeyPress(Key.A)
+
+            expect(callback).toBeCalledTimes(1)
+            expect(callback).toBeCalledWith(keydownEvent)
+
             keyboard.clear()
         })
     })
