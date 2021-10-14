@@ -27,4 +27,5 @@ module.exports = (env) => ({
     externals: {
         'ts-keycode-enum': 'ts-keycode-enum',
     },
+    target: ['web', 'es5'],
 })
