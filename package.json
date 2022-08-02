@@ -1,6 +1,6 @@
 {
     "name": "keyboard-ts",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "Keyboard shortcut listener library in TS",
     "keywords": [
         "keyboard",
