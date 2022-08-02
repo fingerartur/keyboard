@@ -35,7 +35,7 @@
         "type": "git",
         "url": "git+https://github.com/fingerartur/keyboard.git"
     },
-    "author": "Artur Finger",
+    "author": "Artur Finger <fingerartur@gmail.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/fingerartur/keyboard/issues"
