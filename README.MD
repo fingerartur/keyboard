@@ -113,7 +113,7 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
 
 ## Changelog
 
-- Unreleased
+- v1.2.5
   - Added Limitations to readme
 - v1.2.4
     - Fix combos during pause. User can now press part of the combo before or during pause, and the rest after pause.
