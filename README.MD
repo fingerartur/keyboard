@@ -46,8 +46,8 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
 # Install
 
 ```
-    npm i keyboard-ts
-    yarn add keyboard-ts
+npm i keyboard-ts
+yarn add keyboard-ts
 ```
 
 # Licence
@@ -58,6 +58,7 @@ Feel free to use in any way. (MIT)
 # Changelog
 
 - Unreleased
+    - Fix no longer triggering combos when some extra keys are pressed, now combos get triggered only when exactly the combo keys are pressed and nothing else. (e.g. Ctrl + Z combo does not get triggered anymore when user presses Ctrl + Shift + Z)
     - Fixed listening to single combos `keyboard.on([ Key.Ctrl, Key.A ], () => {})` where callback was getting triggered when any of the keys from the combo was pressed
 - v1.2.3
     - Added methods to listen to keyboard combos

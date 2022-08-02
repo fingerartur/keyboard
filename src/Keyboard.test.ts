@@ -177,26 +177,23 @@ describe('keyboard', () => {
         it('should not trigger when extra keys are pressed, not just the combo', () => {
             const keyboard = new Keyboard(document)
             const callbackA = jest.fn()
-            const callbackB = jest.fn()
 
             keyboard.on([Key.A, Key.Space], callbackA)
 
             triggerKeyDown(Key.Space)
+            triggerKeyDown(Key.B)
+            triggerKeyDown(Key.A)
 
             expect(callbackA).not.toBeCalled()
 
+            triggerKeyUp(Key.B)
+
+            expect(callbackA).not.toBeCalled()
+
+            triggerKeyUp(Key.A)
             triggerKeyDown(Key.A)
 
             expect(callbackA).toBeCalledTimes(1)
-
-            triggerKeyDown(Key.B)
-
-            expect(callbackA).toBeCalledTimes(1)
-
-            triggerKeyUp(Key.B)
-
-            // TODO philosophical question, should this be 2 or 1?
-            expect(callbackA).toBeCalledTimes(2)
 
             keyboard.clear()
         })

@@ -1,32 +1,12 @@
-import { Key } from 'ts-keycode-enum'
+import { hashCombo, toCombos } from './utils'
 
-type KeyCombo = Key[]
-
-/**
- * @param {KeyboardEvent} event - pressed key event, in case of multi-key combos
- *  the last pressed key event is passed to this handler
- */
-type Handler = (event: KeyboardEvent) => void
-
-const toCombos = (keys: KeyCombo | KeyCombo[]): KeyCombo[] => {
-    if (keys.length === 0) {
-        return []
-    }
-
-    const isSingleCombo = !Array.isArray(keys[0])
-
-    if (isSingleCombo) {
-        return [keys as KeyCombo]
-    }
-
-    return keys as KeyCombo[]
-}
+import type { Handler, Key, KeyCombo } from './types'
 
 /**
  * Keyboard shortcut manager capable of listening to key combos
  */
 export class Keyboard {
-    private mapCombosToHandlers = new Map<number[], Handler[]>()
+    private mapComboToHandlers = new Map<string, Handler[]>()
     private pressedKeys = new Set<Key>()
 
     constructor(
@@ -71,39 +51,41 @@ export class Keyboard {
      */
     clear() {
         this.stopListening()
-        this.mapCombosToHandlers.clear()
+        this.mapComboToHandlers.clear()
         this.pressedKeys.clear()
     }
 
     private handleKeyDown = (event: KeyboardEvent) => {
         this.pressedKeys.add(event.keyCode)
 
-        this.mapCombosToHandlers.forEach((handlers, combo) => {
-            if (this.isComboPressed(combo)) {
-                handlers.forEach(handler => handler(event))
-            }
-        })
+        this.triggerCombo(event)
+    }
+
+    private getPressedCombo(): KeyCombo {
+        return Array.from(this.pressedKeys.values())
     }
 
     private handleKeyUp = (event: KeyboardEvent) => {
         this.pressedKeys.delete(event.keyCode)
     }
 
-    private isComboPressed(combo: KeyCombo) {
-        return combo.every(key => this.isKeyPressed(key))
-    }
-
-    private isKeyPressed(key: Key) {
-        return this.pressedKeys.has(key)
-    }
-
     private registerComboCallback(combo: KeyCombo, callback: Handler) {
-        if (!this.mapCombosToHandlers.has(combo)) {
-            this.mapCombosToHandlers.set(combo, [])
+        const hash = hashCombo(combo)
+
+        if (!this.mapComboToHandlers.has(hash)) {
+            this.mapComboToHandlers.set(hash, [])
         }
 
-        const handlers = this.mapCombosToHandlers.get(combo)
+        const handlers = this.mapComboToHandlers.get(hash)
 
         handlers!.push(callback)
+    }
+
+    private triggerCombo(event: KeyboardEvent) {
+        const combo = this.getPressedCombo()
+        const hash = hashCombo(combo)
+
+        const handlers = this.mapComboToHandlers.get(hash) ?? []
+        handlers.forEach(handler => handler(event))
     }
 }
