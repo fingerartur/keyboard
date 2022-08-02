@@ -22,7 +22,7 @@ describe('keyboard', () => {
             const keyboard = new Keyboard(document)
             const callback = jest.fn()
 
-            keyboard.on([ Key.A ], callback)
+            keyboard.on([Key.A], callback)
 
             expect(callback).not.toBeCalled()
 
@@ -42,7 +42,7 @@ describe('keyboard', () => {
             const keyboard = new Keyboard(document)
             const callback = jest.fn()
 
-            keyboard.on([ Key.A, Key.Space ], callback)
+            keyboard.on([Key.A, Key.Space], callback)
 
             expect(callback).not.toBeCalled()
 
@@ -63,7 +63,7 @@ describe('keyboard', () => {
             const keyboard = new Keyboard(document)
             const callback = jest.fn()
 
-            keyboard.on([ Key.A ], callback)
+            keyboard.on([Key.A], callback)
 
             expect(callback).not.toBeCalled()
 
