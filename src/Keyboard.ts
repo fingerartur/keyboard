@@ -8,6 +8,7 @@ import type { Handler, Key, KeyCombo } from './types'
 export class Keyboard {
     private mapComboToHandlers = new Map<string, Handler[]>()
     private pressedKeys = new Set<Key>()
+    private isPaused = false
 
     constructor(
         private domNode: Element | Document
@@ -31,19 +32,17 @@ export class Keyboard {
     }
 
     /**
-     * Start listening to key events again after `this.stopListening()`
+     * Unpause listening to key combos after `this.pause()`
      */
-    startListening() {
-        this.domNode.addEventListener('keydown', this.handleKeyDown)
-        this.domNode.addEventListener('keyup', this.handleKeyUp)
+    unpause() {
+        this.isPaused = false
     }
 
     /**
-     * Temporarily stop listening to any key events
+     * Temporarily pause listening to key combos
      */
-    stopListening() {
-        this.domNode.removeEventListener('keydown', this.handleKeyDown)
-        this.domNode.removeEventListener('keyup', this.handleKeyUp)
+    pause() {
+        this.isPaused = true
     }
 
     /**
@@ -58,7 +57,9 @@ export class Keyboard {
     private handleKeyDown = (event: KeyboardEvent) => {
         this.pressedKeys.add(event.keyCode)
 
-        this.triggerCombo(event)
+        if (!this.isPaused) {
+            this.triggerCombo(event)
+        }
     }
 
     private getPressedCombo(): KeyCombo {
@@ -87,5 +88,15 @@ export class Keyboard {
 
         const handlers = this.mapComboToHandlers.get(hash) ?? []
         handlers.forEach(handler => handler(event))
+    }
+
+    private startListening() {
+        this.domNode.addEventListener('keydown', this.handleKeyDown)
+        this.domNode.addEventListener('keyup', this.handleKeyUp)
+    }
+
+    private stopListening() {
+        this.domNode.removeEventListener('keydown', this.handleKeyDown)
+        this.domNode.removeEventListener('keyup', this.handleKeyUp)
     }
 }

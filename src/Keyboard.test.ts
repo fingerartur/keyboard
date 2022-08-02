@@ -199,25 +199,176 @@ describe('keyboard', () => {
         })
     })
 
+    describe('multiple key combos', () => {
+        it('can listen to multiple key combos, callback gets triggered when on of them is pressed', () => {
+            const keyboard = new Keyboard(document)
+            const callback = jest.fn()
 
-    // describe('handler gets keydown event', () => {
-    //     it('gets keydown event', () => {
-    //         const keyboard = new Keyboard(document)
-    //         const callback = jest.fn()
+            keyboard.on([[Key.A, Key.Space], [Key.B, Key.Space]], callback)
 
-    //         keyboard.on([Key.A], callback)
+            expect(callback).not.toBeCalled()
 
-    //         expect(callback).not.toBeCalled()
+            triggerKeyDown(Key.A)
 
-    //         const { keydownEvent } = triggerKeyPress(Key.A)
+            expect(callback).not.toBeCalled()
 
-    //         expect(callback).toBeCalledTimes(1)
-    //         expect(callback).toBeCalledWith(keydownEvent)
+            triggerKeyDown(Key.Space)
 
-    //         keyboard.clear()
-    //     })
-    // })
+            expect(callback).toBeCalledTimes(1)
+
+            triggerKeyUp(Key.Space)
+            triggerKeyUp(Key.A)
+
+            expect(callback).toBeCalledTimes(1)
+
+            triggerKeyDown(Key.B)
+
+            expect(callback).toBeCalledTimes(1)
+
+            triggerKeyDown(Key.Space)
+
+            expect(callback).toBeCalledTimes(2)
+
+            keyboard.clear()
+        })
+    })
+
+    describe('pause / unpause listening to combos', () => {
+        it('can temporarily stop listening to key combos', () => {
+            const keyboard = new Keyboard(document)
+            const callback = jest.fn()
+
+            keyboard.on([Key.A], callback)
+
+            expect(callback).not.toBeCalled()
+
+            triggerKeyDown(Key.A)
+
+            expect(callback).toBeCalledTimes(1)
+
+            triggerKeyUp(Key.A)
+
+            keyboard.pause()
+
+            triggerKeyDown(Key.A)
+            triggerKeyDown(Key.A)
+
+            expect(callback).toBeCalledTimes(1)
+
+            keyboard.unpause()
+
+            triggerKeyDown(Key.A)
+
+            expect(callback).toBeCalledTimes(2)
+
+            triggerKeyUp(Key.A)
+            triggerKeyDown(Key.A)
+
+            expect(callback).toBeCalledTimes(3)
+
+            keyboard.clear()
+        })
+
+        it('can temporarily stop listening to key combos (multi-key)', () => {
+            const keyboard = new Keyboard(document)
+            const callback = jest.fn()
+
+            keyboard.on([Key.A, Key.Space], callback)
+
+            expect(callback).not.toBeCalled()
+
+            keyboard.pause()
+
+            triggerKeyDown(Key.Space)
+            triggerKeyDown(Key.A)
+
+            keyboard.unpause()
+
+            expect(callback).not.toBeCalled()
+
+            keyboard.clear()
+        })
+
+        it('should work when user presses some keys during pause and the rest after unpause', () => {
+            const keyboard = new Keyboard(document)
+            const callback = jest.fn()
+
+            keyboard.on([Key.A, Key.Space], callback)
+
+            expect(callback).not.toBeCalled()
+
+            keyboard.pause()
+
+            triggerKeyDown(Key.A)
+
+            keyboard.unpause()
+
+            expect(callback).not.toBeCalled()
+
+            triggerKeyDown(Key.Space)
+
+            expect(callback).toBeCalledTimes(1)
+
+            keyboard.clear()
+        })
+
+        it('should work when user presses some keys before pause and the rest after unpause', () => {
+            const keyboard = new Keyboard(document)
+            const callback = jest.fn()
+
+            keyboard.on([Key.A, Key.Space], callback)
+
+            expect(callback).not.toBeCalled()
+
+            triggerKeyDown(Key.A)
+
+            expect(callback).not.toBeCalled()
+
+            keyboard.pause()
+
+            triggerKeyDown(Key.Space)
+            triggerKeyDown(Key.Space)
+
+            expect(callback).not.toBeCalled()
+
+            keyboard.unpause()
+
+            triggerKeyDown(Key.Space)
+
+            expect(callback).toBeCalledTimes(1)
+
+            keyboard.clear()
+        })
+    })
+
+    it('can remove all listeners', () => {
+        const keyboard = new Keyboard(document)
+        const callback = jest.fn()
+        const callbackB = jest.fn()
+
+        keyboard.on([Key.A], callback)
+        keyboard.on([Key.B], callbackB)
+
+        expect(callbackB).not.toBeCalled()
+        expect(callback).not.toBeCalled()
+
+        triggerKeyDown(Key.A)
+
+        expect(callback).toBeCalledTimes(1)
+        expect(callbackB).toBeCalledTimes(0)
+
+        triggerKeyUp(Key.A)
+        triggerKeyDown(Key.B)
+
+        keyboard.clear()
+
+        triggerKeyUp(Key.B)
+
+        triggerKeyDown(Key.B)
+        triggerKeyDown(Key.A)
+
+        expect(callback).toBeCalledTimes(1)
+        expect(callbackB).toBeCalledTimes(1)
+
+    })
 })
-
-
-// TODO multiple listeners

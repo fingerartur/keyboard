@@ -73,15 +73,15 @@ combos is pressed.
 
 <br/>
 
-**keyboard.stopListening()**
+**keyboard.pause()**
 
-Temporarily stop listening to any keyboard events. Can be reversed by calling `keyboard.startListening()`.
+Temporarily pause listening to any keyboard combos. Can be reversed by calling `keyboard.unpause()`.
 
 <br/>
 
-**keyboard.startListening()**
+**keyboard.unpause()**
 
-Start listening to keyboard events again after `keyboard.stopListening()` was called.
+Start listening again to keyboard combos again after `keyboard.pause()` was called.
 
 <br/>
 
@@ -107,6 +107,7 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
 # Changelog
 
 - Unreleased
+    - Fix combos during pause. User can now press part of the combo before or during pause, and the rest after pause.
     - Fix no longer triggering combos when some extra keys are pressed, now combos get triggered only when exactly the combo keys are pressed and nothing else. (e.g. Ctrl + Z combo does not get triggered anymore when user presses Ctrl + Shift + Z)
     - Fixed listening to single combos `keyboard.on([ Key.Ctrl, Key.A ], () => {})` where callback was getting triggered when any of the keys from the combo was pressed
 - v1.2.3
