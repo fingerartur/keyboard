@@ -1,6 +1,6 @@
 # Keyboard
 
-A library for listening to keyboard shortcuts and combos.
+A library for listening to keyboard shortcuts and combos, such as `Ctrl + Z`, `Ctrl + Shift + Z`
 
 ## Install
 
@@ -14,8 +14,7 @@ yarn add keyboard-ts
 ## Use
 
 ```ts
-import { Keyboard } from 'keyboard-ts'
-import { Key } from 'keyboard-ts'
+import { Key, Keyboard } from 'keyboard-ts'
 
 const target = document.getElementById('target')
 const keyboard = new Keyboard(target)
@@ -91,22 +90,32 @@ Remove all listeners.
 
 <br/>
 
-# Caution
+## Limitations
 
+1. It is not possible to use `window.alert()` inside the callback.
 ```ts
-// Do not use alert() as a callback!
+import { Key, Keyboard } from 'keyboard-ts'
+
+const target = document.getElementById('target')
+const keyboard = new Keyboard(target)
+
+// Do NOT use alert() as a callback!
 keyboard.on([ Key.Ctrl, Key.A ], () => {
-    alert('stuff')
+    ❌ alert('stuff')
 
     // alert() erases the subsequent 'mouseup' event and this breaks the functionality
     // of the Keyboard class, because it has no way of knowing whether a key was released or not.
     // Sadly, this is how browsers work. It is not a bug in this library.
 })
 ```
+2. There is no support for MacBook CMD key
 
-# Changelog
+
+## Changelog
 
 - Unreleased
+  - Added Limitations to readme
+- v1.2.4
     - Fix combos during pause. User can now press part of the combo before or during pause, and the rest after pause.
     - Fix no longer triggering combos when some extra keys are pressed, now combos get triggered only when exactly the combo keys are pressed and nothing else. (e.g. Ctrl + Z combo does not get triggered anymore when user presses Ctrl + Shift + Z)
     - Fixed listening to single combos `keyboard.on([ Key.Ctrl, Key.A ], () => {})` where callback was getting triggered when any of the keys from the combo was pressed
