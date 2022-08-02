@@ -53,3 +53,11 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
 # Licence
 
 Feel free to use in any way. (MIT)
+
+
+# Changelog
+
+- Unreleased
+    - Fixed listening to single combos `keyboard.on([ Key.Ctrl, Key.A ], () => {})` where callback was getting triggered when any of the keys from the combo was pressed
+- v1.2.3
+    - Added methods to listen to keyboard combos

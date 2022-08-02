@@ -1,6 +1,6 @@
 import { Key } from 'ts-keycode-enum'
 
-type KeyCombo = Array<Key>
+type KeyCombo = Key[]
 
 /**
  * @param {KeyboardEvent} event - pressed key event, in case of multi-key combos
@@ -8,9 +8,26 @@ type KeyCombo = Array<Key>
  */
 type Handler = (event: KeyboardEvent) => void
 
+const toCombos = (keys: KeyCombo | KeyCombo[]): KeyCombo[] => {
+    if (keys.length === 0) {
+        return []
+    }
+
+    const isSingleCombo = !Array.isArray(keys[0])
+
+    if (isSingleCombo) {
+        return [keys as KeyCombo]
+    }
+
+    return keys as KeyCombo[]
+}
+
+/**
+ * Keyboard shortcut manager capable of listening to key combos
+ */
 export class Keyboard {
-    private mapCombosToHandlers = new Map<number[], Handler[]>();
-    private pressedKeys = new Set<Key>();
+    private mapCombosToHandlers = new Map<number[], Handler[]>()
+    private pressedKeys = new Set<Key>()
 
     constructor(
         private domNode: Element | Document
@@ -18,24 +35,40 @@ export class Keyboard {
         this.startListening()
     }
 
-    on(keys: Key[] | KeyCombo[], callback: Handler) {
-        const combos = this.toCombos(keys)
+    /**
+     * Add a listener to keyboard combo or multiple combos
+     *
+     * @param keys keyboard combo or multiple combos
+     * @param callback callback triggered when the combo, or one of the combos if more are specified is pressed. This callback
+     *   receives the KeyBoard event triggered by the last key of the combo (the one which was pressed last)
+     */
+    on(keys: KeyCombo | KeyCombo[], callback: Handler) {
+        const combos = toCombos(keys)
 
         combos.forEach(combo => {
             this.registerComboCallback(combo, callback)
         })
     }
 
+    /**
+     * Start listening to key events again after `this.stopListening()`
+     */
     startListening() {
         this.domNode.addEventListener('keydown', this.handleKeyDown)
         this.domNode.addEventListener('keyup', this.handleKeyUp)
     }
 
+    /**
+     * Temporarily stop listening to any key events
+     */
     stopListening() {
         this.domNode.removeEventListener('keydown', this.handleKeyDown)
         this.domNode.removeEventListener('keyup', this.handleKeyUp)
     }
 
+    /**
+     * Remove all listeners
+     */
     clear() {
         this.stopListening()
         this.mapCombosToHandlers.clear()
@@ -56,19 +89,15 @@ export class Keyboard {
         this.pressedKeys.delete(event.keyCode)
     }
 
-    private isComboPressed(combo: number[]) {
-        let result = true
-
-        combo.forEach(key => {
-            if (!this.pressedKeys.has(key)) {
-                result = false
-            }
-        })
-
-        return result
+    private isComboPressed(combo: KeyCombo) {
+        return combo.every(key => this.isKeyPressed(key))
     }
 
-    private registerComboCallback(combo: Array<Key>, callback: Handler) {
+    private isKeyPressed(key: Key) {
+        return this.pressedKeys.has(key)
+    }
+
+    private registerComboCallback(combo: KeyCombo, callback: Handler) {
         if (!this.mapCombosToHandlers.has(combo)) {
             this.mapCombosToHandlers.set(combo, [])
         }
@@ -76,23 +105,5 @@ export class Keyboard {
         const handlers = this.mapCombosToHandlers.get(combo)
 
         handlers!.push(callback)
-    }
-
-    private toCombos(keys: KeyCombo[] | Key[]) {
-        if (keys.length === 0) {
-            return []
-        }
-
-        const isKeys = !Array.isArray(keys[0])
-        let combos: KeyCombo[] = []
-
-        if (isKeys) {
-            combos = (keys as Key[]).map(key => [key])
-        } else {
-            combos = keys as KeyCombo[]
-            combos = combos.filter(combo => combo.length > 0)
-        }
-
-        return combos
     }
 }
