@@ -126,7 +126,7 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
 
 ## Changelog
 
-- Unreleased
+- v2.0.0
     - Removed support for Windows key and select key
     - Added support for Macbook CMD key
 - v1.2.5
