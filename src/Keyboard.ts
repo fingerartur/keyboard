@@ -1,9 +1,23 @@
 import { hashCombo, toCombos } from './utils'
+import { Key } from './key'
 
-import type { Handler, Key, KeyCombo } from './types'
+import type { Handler, KeyCombo } from './types'
 
 /**
- * Keyboard shortcut manager capable of listening to key combos
+ * Converts CMD keys to a special key code, otherwise returns unchanged key code
+ */
+const convertKeyCode = (keyCode: number) => {
+    const isCmdKey = keyCode === 91 || keyCode === 93
+
+    if (isCmdKey) {
+        return Key.Cmd
+    } else {
+        return keyCode
+    }
+}
+
+/**
+ * Keyboard shortcut manager for listening to key combos, such as ```Ctrl + Z```.
  */
 export class Keyboard {
     private mapComboToHandlers = new Map<string, Handler[]>()
@@ -17,7 +31,7 @@ export class Keyboard {
     }
 
     /**
-     * Add a listener to keyboard combo or multiple combos
+     * Add a listener to one keyboard combo or multiple combos
      *
      * @param keys keyboard combo or multiple combos
      * @param callback callback triggered when the combo, or one of the combos if more are specified is pressed. This callback
@@ -55,19 +69,19 @@ export class Keyboard {
     }
 
     private handleKeyDown = (event: KeyboardEvent) => {
-        this.pressedKeys.add(event.keyCode)
+        this.pressedKeys.add(convertKeyCode(event.keyCode))
 
         if (!this.isPaused) {
             this.triggerCombo(event)
         }
     }
 
-    private getPressedCombo(): KeyCombo {
-        return Array.from(this.pressedKeys.values())
+    private handleKeyUp = (event: KeyboardEvent) => {
+        this.pressedKeys.delete(convertKeyCode(event.keyCode))
     }
 
-    private handleKeyUp = (event: KeyboardEvent) => {
-        this.pressedKeys.delete(event.keyCode)
+    private getPressedCombo(): KeyCombo {
+        return Array.from(this.pressedKeys.values())
     }
 
     private registerComboCallback(combo: KeyCombo, callback: Handler) {

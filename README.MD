@@ -47,6 +47,11 @@ keyboard.on([[ Key.Ctrl, Key.Z ], [ Key.Ctrl, Key.Y ]], () => {
     /* do something ... */
 })
 
+// listen to Ctrl+Z+X
+keyboard.on([[ Key.Ctrl, Key.Z, Key.X ]], () => {
+    /* do something ... */
+})
+
 // remove all listeners
 keyboard.clear()
 ```
@@ -117,13 +122,15 @@ keyboard.on([ Key.Ctrl, Key.A ], () => {
     // of the Keyboard class, because it has no way of knowing whether a key was released or not.
 })
 ```
-2. There is no support for MacBook CMD key
-
+2. Windows key and select key are not supported
 
 ## Changelog
 
+- Unreleased
+    - Removed support for Windows key and select key
+    - Added support for Macbook CMD key
 - v1.2.5
-  - Added Limitations to readme
+    - Added Limitations to readme
 - v1.2.4
     - Fix combos during pause. User can now press part of the combo before or during pause, and the rest after pause.
     - Fix no longer triggering combos when some extra keys are pressed, now combos get triggered only when exactly the combo keys are pressed and nothing else. (e.g. Ctrl + Z combo does not get triggered anymore when user presses Ctrl + Shift + Z)

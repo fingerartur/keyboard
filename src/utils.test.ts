@@ -1,4 +1,4 @@
-import { Key } from 'ts-keycode-enum'
+import { Key } from './key'
 
 import { hashCombo, toCombos } from './utils'
 

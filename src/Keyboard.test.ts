@@ -11,6 +11,11 @@ const triggerKeyDown = (key: Key) => {
 const triggerKeyUp = (key: Key) => {
     const keyupEvent = new KeyboardEvent('keyup', { keyCode: key })
 
+    // keyupEvent.altKey
+    // keyupEvent.metaKey
+    // keyupEvent.ctrlKey
+    // keyupEvent.shiftKey
+
     // @ts-ignore
     document.dispatchEvent(keyupEvent)
 }

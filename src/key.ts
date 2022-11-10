@@ -1,16 +1,13 @@
+/**
+ * Classic key codes (event.keyCode) copied from ts-keycode-enum:
+ */
 export enum Key {
-    // Modifier keys:
-    // Their enum values are made up, these keys are not handled by their
-    // key code, but by checking attributes of keyboard event.
-    Shift = 1_001,
-    Ctrl = 1_002,
-    Cmd = 1_003,
-    Alt = 1_004,
-
-    // Classic key codes (event.keyCode) copied from ts-keycode-enum:
     Backspace = 8,
     Tab = 9,
     Enter = 13,
+    Shift = 16,
+    Ctrl = 17,
+    Alt = 18,
     PauseBreak = 19,
     CapsLock = 20,
     Escape = 27,
@@ -74,9 +71,11 @@ export enum Key {
     X = 88,
     Y = 89,
     Z = 90,
-    LeftWindowKey = 91,
+    // cmd left
+    // LeftWindowKey = 91,
     RightWindowKey = 92,
-    SelectKey = 93,
+    // cmd right
+    // SelectKey = 93,
     Numpad0 = 96,
     Numpad1 = 97,
     Numpad2 = 98,
@@ -118,6 +117,11 @@ export enum Key {
     GraveAccent = 192,
     OpenBracket = 219,
     ClosedBracket = 221,
-    Quote = 222
+    Quote = 222,
+    /**
+     * This is a special key, it represents codes 91 and 93, which stand for
+     * left and right Cmd key on macbook
+     */
+    Cmd = 10_000
 }
 

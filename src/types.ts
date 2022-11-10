@@ -1,4 +1,4 @@
-import { Key } from 'ts-keycode-enum'
+import { Key } from './key'
 
 type KeyCombo = Key[]
 
@@ -9,7 +9,6 @@ type KeyCombo = Key[]
 type Handler = (event: KeyboardEvent) => void
 
 export type {
-    Key,
     KeyCombo,
     Handler,
 }
