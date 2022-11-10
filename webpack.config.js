@@ -24,8 +24,5 @@ module.exports = (env) => ({
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
     },
-    externals: {
-        'ts-keycode-enum': 'ts-keycode-enum',
-    },
     target: ['web', 'es5'],
 })

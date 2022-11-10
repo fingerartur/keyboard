@@ -1,4 +1,4 @@
-import { Key } from 'ts-keycode-enum'
+import { Key } from './key'
 import { Keyboard } from './Keyboard'
 
 const triggerKeyDown = (key: Key) => {
